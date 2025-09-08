@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime> 
 
 using std::cout;
 using std::cin;
@@ -26,20 +28,25 @@ struct Studentas{
 
 Studentas Stud_iv();
 double skaiciuotiMediana(vector<int> paz);
+int atsitiktinisbalas(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
 
 int main(){
+    srand(time(0));
     int m;
     vector<Studentas> Grupe;
     cout << "Kiek studentų grupėje: "; 
     cin >> m;
-    cin.ignore(); // išvalom buferį po cin
+    cin.ignore();
 
     for (int z = 0; z < m; z++) 
         Grupe.push_back(Stud_iv());
 
     cout << "Pasirinkite galutinio balo skaičiavimo metodą:" << endl;
     cout << "1 - Vidurkis" << endl;
-    cout << "2 - Mediana" << endl;
+    cout << "2 -  Mediana" << endl;
     cout << "3 - Abu" << endl;
     int pasirinkimas;
     cin >> pasirinkimas;
@@ -48,18 +55,18 @@ int main(){
     cout << "Studento informacija:" << endl;
     cout << setw(10) << left << "Vardas" << "|"
          << setw(15) << right << "Pavardė" << "|";
-    cout << "Pažymiai|Egz.|";
+   // cout << "Pažymiai|Egz.|";
     if(pasirinkimas == 1) cout << "Galutinis (Vid.)" << endl;
     else if(pasirinkimas == 2) cout << "Galutinis (Med.)" << endl;
     else cout << "Galutinis (Vid.)|Galutinis (Med.)" << endl;
 
-    // rezultatai
+    // lentelės rezultatai
     for (auto& Past : Grupe){
         cout << setw(10) << left << Past.var << "|"
              << setw(15) << right << Past.pav << "|";
-        for(auto& a : Past.paz) cout << setw(3) << a << "|";
-        cout << setw(5) << Past.egz << "|";
-
+       // for(auto& a : Past.paz) cout << setw(3) << a << "|";
+       // cout << setw(5) << Past.egz << "|";
+        //galutinio pažymio pasirinkimas
         if(pasirinkimas == 1) cout << setw(10) << fixed << setprecision(2) << Past.galVid << endl;
         else if(pasirinkimas == 2) cout << setw(10) << fixed << setprecision(2) << Past.galMed << endl;
         else cout << setw(10) << fixed << setprecision(2) << Past.galVid
@@ -74,7 +81,29 @@ Studentas Stud_iv() {
     cout << "Įveskite studento duomenis" << endl;
     cout << "Vardas: "; cin >> Pirmas.var; 
     cout << "Pavardė: "; cin >> Pirmas.pav; 
-    cin.ignore(); // išvalom buferį po cin
+    cin.ignore(); 
+
+    
+
+    cout << "Ar norite sugeneruoti atsitiktinius balus už namų darbus ir egzaminą? (Spauskite 1, jei taip. Arba 0, jei ne): ";
+    int ats;
+    cin >> ats;
+    cin.ignore();
+    if (ats == 1) {
+        int balu_sk;
+        cout << "Kiek balų atsitiktinai sugeneruot";
+        cin>> balu_sk;
+
+        for (int i=0; i< balu_sk; i++) {
+            int paz = atsitiktinisbalas(1,10);
+            Pirmas.paz.push_back(paz);
+            sum+=paz;
+        }
+        Pirmas.egz = atsitiktinisbalas(1,10);
+        cout<< "Sugeneruoti"<< balu_sk << " namų darbų ir egzamino balas studentui"
+        << Pirmas.var << " "<< Pirmas.pav<< "."<< endl;
+ } else {
+
 
     cout << "Įveskite pažymius (Paspauskite du kartus ENTER, jei norite baigti):" << endl;
     string eil;
@@ -104,7 +133,7 @@ Studentas Stud_iv() {
     cout << "Įveskite egzamino pažymį: "; 
     cin >> Pirmas.egz;
     cin.ignore();
-
+}
     if (!Pirmas.paz.empty()) {
         Pirmas.galVid = double(sum) / double(Pirmas.paz.size()) * 0.4 + Pirmas.egz * 0.6;
         Pirmas.galMed = skaiciuotiMediana(Pirmas.paz) * 0.4 + Pirmas.egz * 0.6;
