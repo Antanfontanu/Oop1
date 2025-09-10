@@ -31,53 +31,92 @@ double skaiciuotiMediana(vector<int> paz);
 int atsitiktinisbalas(int min, int max) {
     return min + rand() % (max - min + 1);
 }
-
+int ivestiSk(const string &tekstas, int min_val=-1000000, int max_val=1000000){
+    int sk;
+    while(true){
+        cout << tekstas;
+        string eil;
+        getline(cin, eil);
+        try{
+            sk = std::stoi(eil);
+            if(sk>=min_val && sk<=max_val) return sk;
+            else cout << "Įveskite skaičių nuo " << min_val << " iki " << max_val << "." << endl;
+        }catch(...){
+            cout << "Įveskite tik skaičių." << endl;
+        }
+    }
+}
 
 int main(){
     srand(time(0));
-    int m;
+    
     vector<Studentas> Grupe;
-    cout << "Kiek studentų grupėje: "; 
-    cin >> m;
-    cin.ignore();
-
-    for (int z = 0; z < m; z++) 
-        Grupe.push_back(Stud_iv());
-
-    cout << "Pasirinkite galutinio balo skaičiavimo metodą:" << endl;
-    cout << "1 - Vidurkis" << endl;
-    cout << "2 -  Mediana" << endl;
-    cout << "3 - Abu" << endl;
     int pasirinkimas;
-    cin >> pasirinkimas;
+    // veiksmų pasirinkimo meniu
 
-    // viršus rezultatų lentelės
-    cout << "Studento informacija:" << endl;
-    cout << setw(10) << left << "Vardas" << "|"
-         << setw(15) << right << "Pavardė" << "|";
-   // cout << "Pažymiai|Egz.|";
-    if(pasirinkimas == 1) cout << "Galutinis (Vid.)" << endl;
-    else if(pasirinkimas == 2) cout << "Galutinis (Med.)" << endl;
-    else cout << "Galutinis (Vid.)|Galutinis (Med.)" << endl;
+    while (true){
+        cout<<"------- Meniu -------"<<endl;
+        cout<<"1 - įvesti studentus"<<endl;
+        cout<<"2 - Parodyti rezultatų lentelę"<<endl;
+        cout<<"3 - Baigti programą"<<endl;
+        pasirinkimas = ivestiSk("Pasirinkimas: ", 1, 3);
+        if (pasirinkimas==1){
+            int m = ivestiSk("Kiek studentų grupėje: ", 1);
+            for (int z = 0; z < m; z++) 
+                Grupe.push_back(Stud_iv());
+        }
+        else if (pasirinkimas==2){
+            if (Grupe.empty()){
+                cout<< " Turi būti įvestas bent vienas studentas "<< endl;
+                continue;
+            }
 
-    // lentelės rezultatai
-    for (auto& Past : Grupe){
-        cout << setw(10) << left << Past.var << "|"
-             << setw(15) << right << Past.pav << "|";
-       // for(auto& a : Past.paz) cout << setw(3) << a << "|";
-       // cout << setw(5) << Past.egz << "|";
-        //galutinio pažymio pasirinkimas
-        if(pasirinkimas == 1) cout << setw(10) << fixed << setprecision(2) << Past.galVid << endl;
-        else if(pasirinkimas == 2) cout << setw(10) << fixed << setprecision(2) << Past.galMed << endl;
-        else cout << setw(10) << fixed << setprecision(2) << Past.galVid
-                  << "|" << setw(10) << fixed << setprecision(2) << Past.galMed << endl;
+            cout << "Pasirinkite galutinio balo skaičiavimo metodą:" << endl;
+            cout << "1 - Vidurkis" << endl;
+            cout << "2 -  Mediana" << endl;
+            cout << "3 - Abu" << endl;
+            int metodas = ivestiSk("Pasirinkimas: ", 1,3);
+    
+
+            // viršus rezultatų lentelės
+            cout << "Studento informacija:" << endl;
+            cout << setw(10) << left << "Vardas" << "|"
+                << setw(15) << right << "Pavardė" << "|";
+            // cout << "Pažymiai|Egz.|";
+            if(metodas == 1) cout << "Galutinis (Vid.)" << endl;
+            else if(metodas == 2) cout << "Galutinis (Med.)" << endl;
+            else cout << "Galutinis (Vid.)|Galutinis (Med.)" << endl;
+            cout<<"-------------------------------------"<<endl;
+            // lentelės rezultatai
+            for (auto& Past : Grupe){
+                cout << setw(10) << left << Past.var << "|"
+                    << setw(15) << right << Past.pav << "|";
+            // for(auto& a : Past.paz) cout << setw(3) << a << "|";
+            // cout << setw(5) << Past.egz << "|";
+            //galutinio pažymio pasirinkimas
+            if(metodas == 1) cout << setw(10) << fixed << setprecision(2) << Past.galVid << endl;
+            else if (metodas  == 2) cout << setw(10) << fixed << setprecision(2) << Past.galMed << endl;
+            else cout << setw(10) << fixed << setprecision(2) << Past.galVid
+                    << "|" << setw(10) << fixed << setprecision(2) << Past.galMed << endl;
     }
 }
+        else if(pasirinkimas==3){
+            cout<<"Programa baigta"<<endl;
+            break;
+        }
+    }
+}
+
+
+    
+
+    
+    
 
 Studentas Stud_iv() {
     int sum = 0;
     Studentas Pirmas;
-
+    
     cout << "Įveskite studento duomenis" << endl;
     cout << "Vardas: "; cin >> Pirmas.var; 
     cout << "Pavardė: "; cin >> Pirmas.pav; 
@@ -85,14 +124,13 @@ Studentas Stud_iv() {
 
     
 
-    cout << "Ar norite sugeneruoti atsitiktinius balus už namų darbus ir egzaminą? (Spauskite 1, jei taip. Arba 0, jei ne): ";
-    int ats;
-    cin >> ats;
-    cin.ignore();
+    int ats = ivestiSk("Ar norite sugeneruoti atsitiktinius balus už namų darbus ir egzaminą? (1 - taip, 0 - ne): ", 0, 1);
+
+    
+    
     if (ats == 1) {
-        int balu_sk;
-        cout << "Kiek balų atsitiktinai sugeneruot";
-        cin>> balu_sk;
+        int balu_sk = ivestiSk("Kiek balų atsitiktinai sugeneruoti: ", 1);
+
 
         for (int i=0; i< balu_sk; i++) {
             int paz = atsitiktinisbalas(1,10);
@@ -100,16 +138,17 @@ Studentas Stud_iv() {
             sum+=paz;
         }
         Pirmas.egz = atsitiktinisbalas(1,10);
-        cout<< "Sugeneruoti"<< balu_sk << " namų darbų ir egzamino balas studentui"
+        cout<< "Sugeneruoti"<< balu_sk << " namų darbų ir egzamino balai studentui"
         << Pirmas.var << " "<< Pirmas.pav<< "."<< endl;
  } else {
 
 
-    cout << "Įveskite pažymius (Paspauskite du kartus ENTER, jei norite baigti):" << endl;
-    string eil;
+    cout << "Įveskite pažymius ( Nuo 1-10. Paspauskite du kartus ENTER, jei norite baigti):" << endl;
+   
     int tuscios_eil = 0;
 
     while (true) {
+        string eil;
         cout << "Pažymys: ";
         getline(cin, eil);
 
@@ -123,6 +162,10 @@ Studentas Stud_iv() {
 
         try {
             int laik_paz = std::stoi(eil);
+            if (laik_paz <1 || laik_paz>10){
+                cout << "Pažymys turi būti nuo 1 iki 10"<< endl;
+                continue;
+            }
             Pirmas.paz.push_back(laik_paz);
             sum += laik_paz;
         } catch (...) {
@@ -130,9 +173,7 @@ Studentas Stud_iv() {
         }
     }
 
-    cout << "Įveskite egzamino pažymį: "; 
-    cin >> Pirmas.egz;
-    cin.ignore();
+    Pirmas.egz = ivestiSk("Įveskite egzamino pažymį: ", 1, 10);
 }
     if (!Pirmas.paz.empty()) {
         Pirmas.galVid = double(sum) / double(Pirmas.paz.size()) * 0.4 + Pirmas.egz * 0.6;
