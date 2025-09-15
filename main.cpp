@@ -39,6 +39,7 @@ struct Studentas{
 Studentas Stud_iv();
 double skaiciuotiMediana(vector<int> paz);
 vector<Studentas> nuskaitytiIsFailo(const string& failoVardas);
+void spausdintiLentele(const vector<Studentas>& Grupe, int metodas);
 
 //generuojami atsitiktiniai failai
 int atsitiktinisbalas(int min, int max) {
@@ -75,7 +76,8 @@ int main(){
         cout << "2 - Nuskaityti studentus iš failo" << endl;
         cout<<"3 - Parodyti rezultatų lentelę"<<endl;
         cout<<"4 - Baigti programą"<<endl;
-        pasirinkimas = ivestiSk("Pasirinkimas: ", 1, 4);
+        cout<<"5 - Testavimas pagal failą"<<endl;
+        pasirinkimas = ivestiSk("Pasirinkimas: ", 1, 5);
         if (pasirinkimas==1){
             int m = ivestiSk("Kiek studentų grupėje: ", 1);
             for (int z = 0; z < m; z++) 
@@ -83,13 +85,16 @@ int main(){
 
             sort(Grupe.begin(), Grupe.end(), [](const Studentas& a, const Studentas& b){
                 return a.pav < b.pav;
-    });
+            });
         }
         else if (pasirinkimas == 2) {
             vector<Studentas> failoGrupe = nuskaitytiIsFailo("C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\kursiokai.txt");
             if (!failoGrupe.empty()) {
                 Grupe.insert(Grupe.end(), failoGrupe.begin(), failoGrupe.end());
                 cout << "Nuskaityta " << failoGrupe.size() << " studentų iš failo." << endl;
+                sort(Grupe.begin(), Grupe.end(), [](const Studentas& a, const Studentas& b){
+                    return a.pav < b.pav;
+                });
             }
         }
         else if (pasirinkimas==3){
@@ -103,35 +108,45 @@ int main(){
             cout << "2 -  Mediana" << endl;
             cout << "3 - Abu" << endl;
             int metodas = ivestiSk("Pasirinkimas: ", 1,3);
+            spausdintiLentele(Grupe, metodas);
     
 
-            // viršus rezultatų lentelės
-            cout << "Studento informacija:" << endl;
-            cout << setw(10) << left << "Vardas" << "|"
-                << setw(15) << right << "Pavardė" << "|";
-            // cout << "Pažymiai|Egz.|";
-            if(metodas == 1) cout << "Galutinis (Vid.)" << endl;
-            else if(metodas == 2) cout << "Galutinis (Med.)" << endl;
-            else cout << "Galutinis (Vid.)|Galutinis (Med.)" << endl;
-            cout<<"------------------------------------------------"<<endl;
-            // lentelės rezultatai
-            for (auto& Past : Grupe){
-                cout << setw(10) << left << Past.var << "|"
-                    << setw(15) << right << Past.pav << "|";
-            // for(auto& a : Past.paz) cout << setw(3) << a << "|";
-            // cout << setw(5) << Past.egz << "|";
-            //galutinio pažymio pasirinkimas
-            if(metodas == 1) cout << setw(10) << fixed << setprecision(2) << Past.galVid << endl;
-            else if (metodas  == 2) cout << setw(10) << fixed << setprecision(2) << Past.galMed << endl;
-            else cout << setw(10) << fixed << setprecision(2) << Past.galVid
-                    << "|" << setw(10) << fixed << setprecision(2) << Past.galMed << endl;
-    }
-}
+            
+        }
+
+
+        else if (pasirinkimas == 5) {
+            cout << "Pasirinkite failą testavimui:\n";
+            cout << "1 - studentai10000.txt\n";
+            cout << "2 - studentai100000.txt\n";
+            cout << "3 - studentai1000000.txt\n";
+            int failoPasirinkimas = ivestiSk("Pasirinkimas: ", 1, 3);
+
+            string failoKelias;
+            if (failoPasirinkimas == 1) failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai10000.txt"
+;
+            else if (failoPasirinkimas == 2) failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai100000.txt";
+            else failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai1000000.txt";
+
+            vector<Studentas> testGrupe = nuskaitytiIsFailo(failoKelias);
+            if (testGrupe.empty()) {
+                cout << "Failas tuščias arba jo nepavyko atidaryti." << endl;
+                continue;
+            }
+            sort(testGrupe.begin(), testGrupe.end(), [](const Studentas &a, const Studentas &b){
+                return a.pav < b.pav;
+            });
+
+            cout << "Testavimo rezultatai:\n";
+            spausdintiLentele(testGrupe, 3); 
+        }
+            
         else if(pasirinkimas==4){
             cout<<"Programa baigta"<<endl;
             break;
         }
     }
+    return 0;
 }
 
 
@@ -227,56 +242,86 @@ double skaiciuotiMediana(vector<int> paz){
         return (paz[(n - 1) / 2] + paz[n / 2]) / 2.0;
     }
 }
+// Lentelės spausdinimas
+void spausdintiLentele(const vector<Studentas>& Grupe, int metodas){
+    cout << setw(10) << left << "Vardas" << "|"
+         << setw(15) << right << "Pavardė" << "|";
+    if (metodas==1) cout << "Galutinis (Vid.)" << endl;
+    else if (metodas==2) cout << "Galutinis (Med.)" << endl;
+    else cout << "Galutinis (Vid.)|Galutinis (Med.)" << endl;
+    cout << "------------------------------------------------" << endl;
+
+    for (auto& s : Grupe){
+        cout << setw(10) << left << s.var
+             << "|" << setw(15) << right << s.pav << "|";
+        if (metodas==1) cout << setw(10) << fixed << setprecision(2) << s.galVid << endl;
+        else if (metodas==2) cout << setw(10) << fixed << setprecision(2) << s.galMed << endl;
+        else cout << setw(10) << fixed << setprecision(2) << s.galVid
+                  << "|" << setw(10) << fixed << setprecision(2) << s.galMed << endl;
+    }
+}
 
 //Failo nuskaitymas
 vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
     vector<Studentas> grupe;
     std::ifstream failas(failoVardas);
-    if (!failas.is_open()) { 
-        cout << "Nepavyko atidaryti failo " << failoVardas << endl; 
-        return grupe; 
+    if (!failas) {
+        cout << "Nepavyko atidaryti failo: " << failoVardas << endl;
+        return grupe;
     }
 
     string eilute;
-    // praleidžiame pirmą eilutę (antraštę)
-    std::getline(failas, eilute);
+    std::getline(failas, eilute); // header praleidimas
+
+    bool pavVarOrder = false;
+    if (eilute.find("Pavarde") != string::npos && eilute.find("Vardas") != string::npos) {
+        pavVarOrder = true;
+    }
 
     while (std::getline(failas, eilute)) {
         if (eilute.empty()) continue;
-
-        std::istringstream ss(eilute);
         Studentas s;
-        ss >> s.pav >> s.var; 
+        vector<string> tokens;
+        std::string token;
+        std::istringstream ss(eilute);
+        while (ss >> token) tokens.push_back(token);
 
-        int pazymys;
-        s.paz.clear();
-        while (ss >> pazymys) {
-            s.paz.push_back(pazymys);
+        if (tokens.size() < 3) continue; // negaliojančios eilutės
+
+        if (pavVarOrder) {
+            s.pav = tokens[0];
+            s.var = tokens[1];
+        } else {
+            s.var = tokens[0];
+            s.pav = tokens[1];
         }
 
-       
+        s.paz.clear();
+        for (size_t i = 2; i < tokens.size(); ++i) {
+            try {
+                int bal = std::stoi(tokens[i]);
+                s.paz.push_back(bal);
+            } catch (...) { continue; }
+        }
+
         if (!s.paz.empty()) {
             s.egz = s.paz.back();
-            s.paz.pop_back(); 
+            s.paz.pop_back();
         } else {
             s.egz = 0;
         }
 
-        
         int sum = 0;
         for (int p : s.paz) sum += p;
-        if (!s.paz.empty()) {
-            s.galVid = double(sum)/s.paz.size()*0.4 + s.egz*0.6;
-            s.galMed = skaiciuotiMediana(s.paz)*0.4 + s.egz*0.6;
-        } else {
-            s.galVid = s.egz;
-            s.galMed = s.egz;
-        }
+        s.galVid = s.paz.empty() ? s.egz : double(sum)/s.paz.size()*0.4 + s.egz*0.6;
+        s.galMed = s.paz.empty() ? s.egz : skaiciuotiMediana(s.paz)*0.4 + s.egz*0.6;
 
         grupe.push_back(s);
     }
 
-    failas.close();
     cout << "Sėkmingai nuskaityta " << grupe.size() << " studentų iš failo." << endl;
     return grupe;
 }
+
+
+
