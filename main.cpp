@@ -7,6 +7,8 @@
 #include <ctime> 
 #include <fstream>
 #include <sstream>
+#include <chrono>
+
 
 using std::cout;
 using std::cin;
@@ -26,6 +28,7 @@ using std::srand;
 using std::time;
 using std::ifstream;
 using std::istringstream;
+using namespace std::chrono;
 
 struct Studentas{
     string var;
@@ -75,8 +78,8 @@ int main(){
         cout<<"1 - įvesti studentus"<<endl;
         cout << "2 - Nuskaityti studentus iš failo" << endl;
         cout<<"3 - Parodyti rezultatų lentelę"<<endl;
-        cout<<"4 - Baigti programą"<<endl;
-        cout<<"5 - Testavimas pagal failą"<<endl;
+        cout<<"4 - Testavimas pagal failą"<<endl;
+        cout<<"5 - Baigti programą"<<endl;
         pasirinkimas = ivestiSk("Pasirinkimas: ", 1, 5);
         if (pasirinkimas==1){
             int m = ivestiSk("Kiek studentų grupėje: ", 1);
@@ -88,7 +91,8 @@ int main(){
             });
         }
         else if (pasirinkimas == 2) {
-            vector<Studentas> failoGrupe = nuskaitytiIsFailo("C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\kursiokai.txt");
+            vector<Studentas>
+            failoGrupe = nuskaitytiIsFailo("C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\kursiokai.txt");
             if (!failoGrupe.empty()) {
                 Grupe.insert(Grupe.end(), failoGrupe.begin(), failoGrupe.end());
                 cout << "Nuskaityta " << failoGrupe.size() << " studentų iš failo." << endl;
@@ -115,7 +119,7 @@ int main(){
         }
 
 
-        else if (pasirinkimas == 5) {
+        else if (pasirinkimas == 4) {
             cout << "Pasirinkite failą testavimui:\n";
             cout << "1 - studentai10000.txt\n";
             cout << "2 - studentai100000.txt\n";
@@ -128,6 +132,7 @@ int main(){
             else if (failoPasirinkimas == 2) failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai100000.txt";
             else failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai1000000.txt";
 
+            auto start = high_resolution_clock::now();
             vector<Studentas> testGrupe = nuskaitytiIsFailo(failoKelias);
             if (testGrupe.empty()) {
                 cout << "Failas tuščias arba jo nepavyko atidaryti." << endl;
@@ -136,12 +141,18 @@ int main(){
             sort(testGrupe.begin(), testGrupe.end(), [](const Studentas &a, const Studentas &b){
                 return a.pav < b.pav;
             });
+            auto end = high_resolution_clock::now();
+            auto duration = duration_cast<milliseconds>(end - start).count();
+
+    
+            
 
             cout << "Testavimo rezultatai:\n";
             spausdintiLentele(testGrupe, 3); 
+            cout << "👉 Laikas (nuskaitymas + rikiavimas): " << duration << " ms" << endl;
         }
             
-        else if(pasirinkimas==4){
+        else if(pasirinkimas==5){
             cout<<"Programa baigta"<<endl;
             break;
         }
@@ -222,6 +233,8 @@ Studentas Stud_iv() {
         Pirmas.galVid = double(sum) / double(Pirmas.paz.size()) * 0.4 + Pirmas.egz * 0.6;
         Pirmas.galMed = skaiciuotiMediana(Pirmas.paz) * 0.4 + Pirmas.egz * 0.6;
     } else {
+        cout << "Įspėjimas: studentui " << Pirmas.var << " " << Pirmas.pav 
+         << " nėra įvestų pažymių. Galutinis balas lygus egzamino balui." << endl;
         Pirmas.galVid = Pirmas.egz;
         Pirmas.galMed = Pirmas.egz;
     }
@@ -301,7 +314,11 @@ vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
             try {
                 int bal = std::stoi(tokens[i]);
                 s.paz.push_back(bal);
-            } catch (...) { continue; }
+            } catch (...) {
+                cout << "Įspėjimas: eilutėje su studentu „" << s.var << " " << s.pav 
+                    << "“ pažymys \"" << tokens[i] << "\" buvo praleistas (ne skaičius)." << endl;
+                continue;
+            }
         }
 
         if (!s.paz.empty()) {
