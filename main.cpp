@@ -149,7 +149,7 @@ int main(){
 
             cout << "Testavimo rezultatai:\n";
             spausdintiLentele(testGrupe, 3); 
-            cout << "👉 Laikas (nuskaitymas + rikiavimas): " << duration << " ms" << endl;
+            cout << "Nuskaitymo ir rikiavimo laikas: " << duration << " ms" << endl;
         }
             
         else if(pasirinkimas==5){
@@ -197,7 +197,7 @@ Studentas Stud_iv() {
  } else {
 
 
-    cout << "Įveskite pažymius ( Nuo 1-10. Paspauskite du kartus ENTER, jei norite baigti):" << endl;
+    cout << "Įveskite pažymius ( Nuo 1-10. Paspauskite du kartus ENTER, jei norite baigti vesti pažymius):" << endl;
    
     int tuscios_eil = 0;
 
@@ -227,7 +227,7 @@ Studentas Stud_iv() {
         }
     }
 
-    Pirmas.egz = ivestiSk("Įveskite egzamino pažymį: ", 1, 10);
+    Pirmas.egz = ivestiSk("Įveskite egzamino pažymį:  ", 1, 10);
 }
     if (!Pirmas.paz.empty()) {
         Pirmas.galVid = double(sum) / double(Pirmas.paz.size()) * 0.4 + Pirmas.egz * 0.6;
