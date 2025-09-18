@@ -285,7 +285,9 @@ vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
 
     string eilute;
 
+
     std::getline(failas, eilute); 
+
 
 
     bool pavVarOrder = false;
@@ -342,5 +344,5 @@ vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
     return grupe;
 }
 
-//tiesiog komentaras
+
 
