@@ -294,6 +294,7 @@ vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
     if (eilute.find("Pavarde") != string::npos && eilute.find("Vardas") != string::npos) {
         pavVarOrder = true;
     }
+    //
 
     while (std::getline(failas, eilute)) {
         if (eilute.empty()) continue;
