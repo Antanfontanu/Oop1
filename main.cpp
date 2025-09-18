@@ -284,7 +284,7 @@ vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
     }
 
     string eilute;
-    std::getline(failas, eilute); // header praleidimas
+    std::getline(failas, eilute); 
 
     bool pavVarOrder = false;
     if (eilute.find("Pavarde") != string::npos && eilute.find("Vardas") != string::npos) {
@@ -299,7 +299,7 @@ vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
         std::istringstream ss(eilute);
         while (ss >> token) tokens.push_back(token);
 
-        if (tokens.size() < 3) continue; // negaliojančios eilutės
+        if (tokens.size() < 3) continue;
 
         if (pavVarOrder) {
             s.pav = tokens[0];
