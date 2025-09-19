@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
+#include <string>
 
 
 using std::cout;
@@ -29,6 +30,9 @@ using std::time;
 using std::ifstream;
 using std::istringstream;
 using namespace std::chrono;
+using std::ofstream;
+using namespace std::string_literals;
+using std::to_string;
 
 struct Studentas{
     string var;
@@ -43,13 +47,56 @@ Studentas Stud_iv();
 double skaiciuotiMediana(vector<int> paz);
 vector<Studentas> nuskaitytiIsFailo(const string& failoVardas);
 void spausdintiLentele(const vector<Studentas>& Grupe, int metodas);
+void generuotiFailus();
+int atsitiktinisbalas(int min, int max);
+int ivestiSk(const string &tekstas, int min_val=-1000000, int max_val=1000000);
 
-//generuojami atsitiktiniai failai
+
+void generuotiFailus() {
+    vector<int> dydziai = {1000, 10000, 100000, 1000000, 10000000};
+    cout << "Pasirinkite studentų kiekį iš šių variantų:\n";
+    for (size_t i = 0; i < dydziai.size(); i++) {
+        cout << i + 1 << " - " << dydziai[i] << endl;
+    }
+    int pasirinkimas = ivestiSk("Jūsų pasirinkimas: ", 1, (int)dydziai.size());
+    int dydis = dydziai[pasirinkimas - 1];
+    int nd_kiekis = ivestiSk("Kiek namų darbų balų sugeneruoti kiekvienam studentui? ", 1, 20);
+
+    string failoVardas = string("studentai") + std::to_string(dydis) + ".txt";
+    ofstream out(failoVardas);
+    if (!out) {
+        cout << "Nepavyko sukurti failo: " << failoVardas << endl;
+        return;
+    }
+
+        out << setw(15) << left << "Vardas"
+            << setw(15) << left << "Pavarde";
+        for (int j = 1; j <= nd_kiekis; j++) out << "ND" << j << " ";
+        out << "Egzaminas" << endl;
+
+        for (int i = 1; i <= dydis; i++) {
+            out << setw(15) << left << "Vardas" + to_string(i)
+                << setw(15) << left << "Pavarde" + to_string(i);
+
+            for (int j = 0; j < nd_kiekis; j++) {
+                out << atsitiktinisbalas(1, 10) << " ";
+            }
+            out << atsitiktinisbalas(1, 10) << endl;
+        }
+
+        out.close();
+        cout << "Sukurtas failas: " << failoVardas 
+             << " (" << dydis << " įrašų, ND=" << nd_kiekis << ")" << endl;
+    }
+
+
+
+//generuojami atsitiktiniai balus
 int atsitiktinisbalas(int min, int max) {
     return min + rand() % (max - min + 1);
 }
 //skaičiaus įvedimas teisingai
-int ivestiSk(const string &tekstas, int min_val=-1000000, int max_val=1000000){
+int ivestiSk(const string &tekstas, int min_val, int max_val){
     int sk;
     while(true){
         cout << tekstas;
@@ -79,8 +126,9 @@ int main(){
         cout << "2 - Nuskaityti studentus iš failo" << endl;
         cout<<"3 - Parodyti rezultatų lentelę"<<endl;
         cout<<"4 - Testavimas pagal failą"<<endl;
-        cout<<"5 - Baigti programą"<<endl;
-        pasirinkimas = ivestiSk("Pasirinkimas: ", 1, 5);
+        cout << "5 - Generuoti atsitiktinius studentų failus" << endl;
+        cout<<"6 - Baigti programą"<<endl;
+        pasirinkimas = ivestiSk("Pasirinkimas: ", 1, 6);
         if (pasirinkimas==1){
             int m = ivestiSk("Kiek studentų grupėje: ", 1);
             for (int z = 0; z < m; z++) 
@@ -92,7 +140,7 @@ int main(){
         }
         else if (pasirinkimas == 2) {
             vector<Studentas>
-            failoGrupe = nuskaitytiIsFailo("C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\kursiokai.txt");
+            failoGrupe = nuskaitytiIsFailo("kursiokai.txt");
             if (!failoGrupe.empty()) {
                 Grupe.insert(Grupe.end(), failoGrupe.begin(), failoGrupe.end());
                 cout << "Nuskaityta " << failoGrupe.size() << " studentų iš failo." << endl;
@@ -127,10 +175,9 @@ int main(){
             int failoPasirinkimas = ivestiSk("Pasirinkimas: ", 1, 3);
 
             string failoKelias;
-            if (failoPasirinkimas == 1) failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai10000.txt"
-;
-            else if (failoPasirinkimas == 2) failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai100000.txt";
-            else failoKelias = "C:\\Users\\blazb\\OneDrive\\Desktop\\uni\\obj\\proj\\studentai1000000.txt";
+            if (failoPasirinkimas == 1) failoKelias = "studentai10000.txt";
+            else if (failoPasirinkimas == 2) failoKelias = "studentai100000.txt";
+            else failoKelias = "studentai1000000.txt";
 
             auto start = high_resolution_clock::now();
             vector<Studentas> testGrupe = nuskaitytiIsFailo(failoKelias);
@@ -151,8 +198,12 @@ int main(){
             spausdintiLentele(testGrupe, 3); 
             cout << "Nuskaitymo ir rikiavimo laikas: " << duration << " ms" << endl;
         }
+        else if (pasirinkimas == 5) {
+            generuotiFailus();
+        }
+
             
-        else if(pasirinkimas==5){
+        else if(pasirinkimas==6){
             cout<<"Programa baigta"<<endl;
             break;
         }
@@ -344,6 +395,3 @@ vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
     cout << "Sėkmingai nuskaityta " << grupe.size() << " studentų iš failo." << endl;
     return grupe;
 }
-
-
-
