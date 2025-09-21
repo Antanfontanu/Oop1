@@ -4,7 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdlib>
-#include <ctime> 
+
 #include <fstream>
 #include <sstream>
 #include <chrono>
@@ -26,7 +26,7 @@ using std::stoi;
 using std::getline;
 using std::rand;
 using std::srand;
-using std::time;
+
 using std::ifstream;
 using std::istringstream;
 using namespace std::chrono;
@@ -46,7 +46,7 @@ struct Studentas{
 Studentas Stud_iv();
 double skaiciuotiMediana(vector<int> paz);
 vector<Studentas> nuskaitytiIsFailo(const string& failoVardas);
-void spausdintiLentele(const vector<Studentas>& Grupe, int metodas);
+void spausdintiLentele(const vector<Studentas>& Grupe, int metodas, std::ostream& os = std::cout);
 void generuotiFailus();
 int atsitiktinisbalas(int min, int max);
 int ivestiSk(const string &tekstas, int min_val=-1000000, int max_val=1000000);
@@ -113,7 +113,7 @@ int ivestiSk(const string &tekstas, int min_val, int max_val){
 }
 
 int main(){
-    srand(time(0));
+    srand((unsigned)system_clock::now().time_since_epoch().count());
     
     vector<Studentas> Grupe;
     int pasirinkimas;
@@ -140,7 +140,7 @@ int main(){
         }
         else if (pasirinkimas == 2) {
             vector<Studentas>
-            failoGrupe = nuskaitytiIsFailo("kursiokai.txt");
+            failoGrupe = nuskaitytiIsFailo("..\\kursiokai.txt");
             if (!failoGrupe.empty()) {
                 Grupe.insert(Grupe.end(), failoGrupe.begin(), failoGrupe.end());
                 cout << "Nuskaityta " << failoGrupe.size() << " studentų iš failo." << endl;
@@ -175,9 +175,9 @@ int main(){
             int failoPasirinkimas = ivestiSk("Pasirinkimas: ", 1, 3);
 
             string failoKelias;
-            if (failoPasirinkimas == 1) failoKelias = "studentai10000.txt";
-            else if (failoPasirinkimas == 2) failoKelias = "studentai100000.txt";
-            else failoKelias = "studentai1000000.txt";
+            if (failoPasirinkimas == 1) failoKelias = "..\\studentai10000.txt";
+            else if (failoPasirinkimas == 2) failoKelias = "..\\studentai100000.txt";
+            else failoKelias = "..\\studentai1000000.txt";
 
             auto start = high_resolution_clock::now();
             vector<Studentas> testGrupe = nuskaitytiIsFailo(failoKelias);
@@ -190,13 +190,21 @@ int main(){
             });
             auto end = high_resolution_clock::now();
             auto duration = duration_cast<milliseconds>(end - start).count();
+            ofstream fout("testavimo_rezultatai.txt");
+            if (!fout) {
+                cout << "Nepavyko sukurti rezultato failo!" << endl;
+                continue;
+            }
+            fout << "Testavimo rezultatai:\n";
+            spausdintiLentele(testGrupe, 3, fout);
+            fout << "Nuskaitymo ir rikiavimo laikas: " << duration << " ms" << endl;
+            fout.close();
+            cout << "Rezultatai įrašyti į testavimo_rezultatai.txt" << endl;
 
     
             
 
-            cout << "Testavimo rezultatai:\n";
-            spausdintiLentele(testGrupe, 3); 
-            cout << "Nuskaitymo ir rikiavimo laikas: " << duration << " ms" << endl;
+
         }
         else if (pasirinkimas == 5) {
             generuotiFailus();
@@ -307,7 +315,7 @@ double skaiciuotiMediana(vector<int> paz){
     }
 }
 // Lentelės spausdinimas
-void spausdintiLentele(const vector<Studentas>& Grupe, int metodas){
+void spausdintiLentele(const vector<Studentas>& Grupe, int metodas,std::ostream& os){
     cout << setw(10) << left << "Vardas" << "|"
          << setw(15) << right << "Pavardė" << "|";
     if (metodas==1) cout << "Galutinis (Vid.)" << endl;
@@ -316,12 +324,12 @@ void spausdintiLentele(const vector<Studentas>& Grupe, int metodas){
     cout << "------------------------------------------------" << endl;
 
     for (auto& s : Grupe){
-        cout << setw(10) << left << s.var
-             << "|" << setw(15) << right << s.pav << "|";
-        if (metodas==1) cout << setw(10) << fixed << setprecision(2) << s.galVid << endl;
-        else if (metodas==2) cout << setw(10) << fixed << setprecision(2) << s.galMed << endl;
-        else cout << setw(10) << fixed << setprecision(2) << s.galVid
-                  << "|" << setw(10) << fixed << setprecision(2) << s.galMed << endl;
+        os << setw(10) << left << s.var
+           << "|" << setw(15) << right << s.pav << "|";
+        if (metodas==1) os << setw(10) << fixed << setprecision(2) << s.galVid << endl;
+        else if (metodas==2) os << setw(10) << fixed << setprecision(2) << s.galMed << endl;
+        else os << setw(10) << fixed << setprecision(2) << s.galVid
+                << "|" << setw(10) << fixed << setprecision(2) << s.galMed << endl;
     }
 }
 
@@ -329,6 +337,7 @@ void spausdintiLentele(const vector<Studentas>& Grupe, int metodas){
 vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
     vector<Studentas> grupe;
     std::ifstream failas(failoVardas);
+    
     if (!failas) {
         cout << "Nepavyko atidaryti failo: " << failoVardas << endl;
         return grupe;
