@@ -51,7 +51,7 @@ auto duration = duration_cast<milliseconds>(end - start).count();
 ## Rezultatai
 
 10 000 studentų failas nuskaitytas ir surikiuotas	~159 ms greičiu.<br>
-100 000	- ~284 ms greičiu.<br>
+100 000	- ~1284 ms greičiu.<br>
 1 000 000 -	~10 052 ms greičiu.<br>
 
 ### Išvados
