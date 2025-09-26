@@ -7,12 +7,20 @@
 #include "studentas.h"
 #include "failai.h"
 #include "meniu.h"
+#include <filesystem>
+
+
+   
+
 
 using namespace std;
 using namespace std::chrono;
 
+
+
 int main(){
     srand((unsigned)system_clock::now().time_since_epoch().count());
+    
     
     vector<Studentas> Grupe;
     int pasirinkimas;
@@ -38,7 +46,7 @@ int main(){
             });
         }
         else if (pasirinkimas == 2) {
-            vector<Studentas> failoGrupe = nuskaitytiIsFailo("..\\kursiokai.txt");
+            vector<Studentas> failoGrupe = nuskaitytiIsFailo("kursiokai.txt");
             if (!failoGrupe.empty()) {
                 Grupe.insert(Grupe.end(), failoGrupe.begin(), failoGrupe.end());
                 cout << "Nuskaityta " << failoGrupe.size() << " studentų iš failo." << endl;
@@ -65,9 +73,9 @@ int main(){
             int failoPasirinkimas = ivestiSk("Pasirinkimas: ", 1, 3);
 
             string failoKelias;
-            if (failoPasirinkimas == 1) failoKelias = "..\\studentai10000.txt";
-            else if (failoPasirinkimas == 2) failoKelias = "..\\studentai100000.txt";
-            else failoKelias = "..\\studentai1000000.txt";
+            if (failoPasirinkimas == 1) failoKelias = "studentai10000.txt";
+            else if (failoPasirinkimas == 2) failoKelias = "studentai100000.txt";
+            else failoKelias = "studentai1000000.txt";
 
             auto start = high_resolution_clock::now();
             vector<Studentas> testGrupe = nuskaitytiIsFailo(failoKelias);
@@ -78,9 +86,12 @@ int main(){
 
             ofstream fout("testavimo_rezultatai.txt");
             if (!fout) { cout << "Nepavyko sukurti rezultato failo!" << endl; continue; }
-            fout << "Testavimo rezultatai:\n";
-            spausdintiLentele(testGrupe, Metodas::Abu, fout);
             fout << "Nuskaitymo ir rikiavimo laikas: " << duration << " ms" << endl;
+            fout << "Testavimo rezultatai:\n";
+            
+            
+            spausdintiLentele(testGrupe, Metodas::Abu, fout);
+
             fout.close();
             cout << "Rezultatai įrašyti į testavimo_rezultatai.txt" << endl;
         }

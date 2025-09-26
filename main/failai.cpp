@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <cstdlib>
+#include <chrono>
 
 using namespace std;
 
@@ -13,6 +14,8 @@ int atsitiktinisbalas(int min, int max) {
 }
 
 void generuotiFailus() {
+    using namespace std::chrono;
+    auto start = high_resolution_clock::now();
     vector<int> dydziai = {1000, 10000, 100000, 1000000, 10000000};
     cout << "Pasirinkite studentų kiekį iš šių variantų:\n";
     for (size_t i = 0; i < dydziai.size(); i++) {
@@ -25,9 +28,10 @@ void generuotiFailus() {
     cout << "Kiek namų darbų balų sugeneruoti kiekvienam studentui? ";
     cin >> nd_kiekis; cin.ignore();
 
-    string failoVardas = "studentai" + to_string(dydis) + ".txt";
+    string failoVardas = "studentas" + to_string(dydis) + ".txt";
     ofstream out(failoVardas);
     if (!out) { cout << "Nepavyko sukurti failo: " << failoVardas << endl; return; }
+    
 
     out << setw(15) << left << "Vardas" << setw(15) << left << "Pavarde";
     for (int j = 1; j <= nd_kiekis; j++) out << "ND" << j << " ";
@@ -39,10 +43,13 @@ void generuotiFailus() {
         for (int j = 0; j < nd_kiekis; j++) out << atsitiktinisbalas(1, 10) << " ";
         out << atsitiktinisbalas(1, 10) << endl;
     }
-
     out.close();
+    auto end = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(end - start).count();      
+    
     cout << "Sukurtas failas: " << failoVardas 
          << " (" << dydis << " įrašų, ND=" << nd_kiekis << ")" << endl;
+    cout << "Failo generavimas užtruko: " << duration << " ms" << endl;
 }
 
 vector<Studentas> nuskaitytiIsFailo(const string& failoVardas) {
