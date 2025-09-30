@@ -1,18 +1,18 @@
-# OP
+# OOP
 v.02 - release
-## Trumpas aprašymas
+## Atnaujinimai
 v0.1 failai buvo suskirstyti į keturis .cpp ir keturis .h failus. <br> 
 Taip pat pridėtas atsitiktinis failų generavimas. <br>
 bei studentų skirstymas grupėmis pagal jų rezultatus. <br>
 
 ## Atnaujintas meniu
-1 - įvesti studentus
-2 - Nuskaityti studentus iš failo
-3 - Parodyti rezultatų lentelę
-4 - Testavimas pagal failą
-5 - Generuoti atsitiktinius studentų failus
-6 - Padalinti studentus į grupes (vargšiukai/kietiakai)
-7 - Baigti programą
+1 - įvesti studentus <br>
+2 - Nuskaityti studentus iš failo <br>
+3 - Parodyti rezultatų lentelę <br>
+4 - Testavimas pagal failą <br>
+5 - Generuoti atsitiktinius studentų failus <br>
+6 - Padalinti studentus į grupes (vargšiukai/kietiakai) <br>
+7 - Baigti programą <br>
 
 ## Programos spartos analizė
 
