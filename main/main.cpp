@@ -46,15 +46,47 @@ int main(){
             });
         }
         else if (pasirinkimas == 2) {
-            vector<Studentas> failoGrupe = nuskaitytiIsFailo("kursiokai.txt");
+        
+            cout << "Pasirinkite, iš kurio failo nuskaityti studentus:" << endl;
+            cout << "1 - kursiokai.txt" << endl;
+            cout << "2 - studentas1000.txt" << endl;
+            cout << "3 - studentas10000.txt" << endl;
+            cout << "4 - studentas100000.txt" << endl;
+            cout << "5 - studentas1000000.txt" << endl;
+            cout << "6 - studentas10000000.txt" << endl;
+
+            int failoPasirinkimas = ivestiSk("Pasirinkimas: ", 1, 6);
+            string failoKelias;
+
+            switch (failoPasirinkimas) {
+                case 1: failoKelias = "kursiokai.txt"; break;
+                case 2: failoKelias = "studentas1000.txt"; break;
+                case 3: failoKelias = "studentas10000.txt"; break;
+                case 4: failoKelias = "studentas100000.txt"; break;
+                case 5: failoKelias = "studentas1000000.txt"; break;
+                case 6: failoKelias = "studentas10000000.txt"; break;
+            }
+            
+            if (!std::filesystem::exists(failoKelias)) {
+                cout << "Failo \"" << failoKelias << "\" nėra! "
+                    << "Pirmiausia sugeneruokite jį (naudokite meniu nr 5)." << endl;
+            }else {
+                auto start_read = high_resolution_clock::now();
+                vector<Studentas> failoGrupe = nuskaitytiIsFailo(failoKelias);
+                auto end_read = high_resolution_clock::now();
+
+            cout << "Failo nuskaitymas užtruko: "
+                 << duration_cast<milliseconds>(end_read - start_read).count()
+                 << " ms" << endl;
             if (!failoGrupe.empty()) {
                 Grupe.insert(Grupe.end(), failoGrupe.begin(), failoGrupe.end());
                 cout << "Nuskaityta " << failoGrupe.size() << " studentų iš failo." << endl;
                 sort(Grupe.begin(), Grupe.end(), [](const Studentas& a, const Studentas& b){
                     return a.pav < b.pav;
-                });
+                    });
             }
         }
+    }
         else if (pasirinkimas==3){
             if (Grupe.empty()){ cout<< " Turi būti įvestas bent vienas studentas "<< endl; continue; }
 
@@ -97,6 +129,7 @@ int main(){
         }
         else if (pasirinkimas == 5) { generuotiFailus(); }
         else if (pasirinkimas == 6){
+            
             if (Grupe.empty()) { cout << "Pirmiau įveskite studentus." << endl; continue; }
 
             cout << "Pasirinkite galutinio balo skaičiavimo metodą:" << endl;

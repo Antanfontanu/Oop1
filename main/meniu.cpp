@@ -3,8 +3,10 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int ivestiSk(const string &tekstas, int min_val, int max_val){
     int sk;
@@ -41,8 +43,11 @@ void spausdintiLentele(const vector<Studentas>& Grupe, Metodas metodas,std::ostr
 }
 
 void padalintiStudentus(const vector<Studentas>& Grupe, Metodas metodas){
+    auto start_split = high_resolution_clock::now();
+
     vector<Studentas> vargsiukai;
     vector<Studentas> kietiakai;
+    
 
     for (const auto& s : Grupe){
         double galutinis;
@@ -53,7 +58,15 @@ void padalintiStudentus(const vector<Studentas>& Grupe, Metodas metodas){
         if(galutinis<5.0) vargsiukai.push_back(s);
         else kietiakai.push_back(s);
     }
+    auto end_split = high_resolution_clock::now();
+    cout << "Padalinimas į grupes užtruko: "
+         << duration_cast<milliseconds>(end_split - start_split).count()<< " ms" << endl;
+    
+    auto start_write = high_resolution_clock::now();
 
     irasytiStudentusIFaila(vargsiukai, metodas, "vargsiukai.txt");
     irasytiStudentusIFaila(kietiakai, metodas, "kietiakai.txt");
+    auto end_write = high_resolution_clock::now();
+    cout << "Įrašymas į failus užtruko: "
+         << duration_cast<milliseconds>(end_write - start_write).count()<< " ms" << endl;
 }
