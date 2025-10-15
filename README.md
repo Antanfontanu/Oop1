@@ -1,18 +1,41 @@
 # OOP
 v.03 - release
-## Atnaujinimai
-Pridėtas pasirinkimas su kuriais vektoriais norime dirbti <br> 
+## Programos aprašymas <br/>
+Programa  leidžia vartotojui suvesti arba nuskaityti duomenis apie studentą(vardą, pavardę, namų darbų rezultatus, egzamino rezultatus).<br>
+Apskaičiuoja studentų galutinius rezultatus paga formulę:<br>
+*Galutinis balas = 0.4 x namų darbų rezultatai + 0.6 x egzamino įvertinimas.*  <br>
+Duomenų įvedimas ranka - leidžiama vartotojui pasirinkti, kiek namų darbų pažymių jis nori įvesti/sigeneruoti.
+Namų darbų rezultatai - vartotojui leidžiama pasirinkti ar namų darbų rezultatus skaičiuoti su mediana ar gauti jų vidurkį.<br/>
+<br/>
+## Atnaujinimai v0.2
+v0.1 failai buvo suskirstyti į keturis .cpp ir keturis .h failus. <br> 
 Taip pat pridėtas atsitiktinis failų generavimas. <br>
 bei studentų skirstymas grupėmis pagal jų rezultatus. <br>
+## Atnaujinimai v0.3
+Pridėtas pasirinkimas su kuriais vektoriais norime dirbti <br> 
+Pridėta daugiau .h failų <br>
+Pridėta objekto saugojimo vieta. <br>
+Atlikti laiko testavimai tarp vector ir list konteinerių. <br>
 
-
+**Failų aprašymas:**
+* main.cpp yra pagrindinis failas.
+* studentas.cpp faile aprašytas studento įvedimas.
+* failai.cpp faile surašyti metodai naudojami failų generavimui, nuskaitymui, įrašymui.
+* meniu.cpp faile aprašytos meniu naudojamos funkcijos.
+* MyLib.h faile aprašytos visos pogramoje naudojamos bibliotekos.
+* studentas.h faile aprašyta Stud struktūra, kuri aprašo studentą ir metodų deklaracijos.
+* Timer.h faile aprašytas laiko skaičiavimo klasė.
+* meniu.h deklaruotos studentų dalijimo, rikiavimo funkcijos
+* failai.h deklaruotos funkcijos failai.cpp
+<a/>
 
 ## Programos spartos analizė
 
-Laiko testavimas buvo atliktas su vektoriaus ir sąrašo konteineriais, naudoti tie patys sugeneruoti failai su 5 namų darbų pažymiais, laikui imtas 3 bandymų vidurkis
+Laiko testavimas buvo atliktas su vektoriaus ir sąrašo konteineriais, naudoti tie patys sugeneruoti failai su 5 namų darbų pažymiais iš v0.2 versijos, laikui matuoti imtas 5 bandymų vidurkis
+
 ### Testavimo sistemos parametrai
-CPU: AMD Ryzen 5 7535U with Radeon Graphics 2.90 GHz
-RAM: 16GB (13.7GB naudojami)<br>
+CPU: AMD Ryzen 5 7535U with Radeon Graphics 2.90 GHz <br>
+RAM: 16GB (13.7GB naudojami) <br>
 HDD: SSD 512GB (SKHynix HFS512GEJ4X112N) <br>
 ### Laiko matavimo metodas
 Buvo naudota naudota C++ biblioteka chrono
@@ -29,7 +52,7 @@ auto end = high_resolution_clock::now();
 auto duration = duration_cast<milliseconds>(end - start).count();
 ```
 
-### Testevimo kategorijos
+### Testavimo kategorijos
 1 Failų kūrimas <br>
 2 Duomenų nuskaitymas iš failų <br>
 3 Studentų rūšiavimas į dvi grupes <br>
@@ -74,4 +97,10 @@ auto duration = duration_cast<milliseconds>(end - start).count();
 ### studentas10000000.txt
 ![studentas10000000](diagramos/studentas10000000.png)
 
-
+## Spartos analizės išvados:
+Buvo testuojama programa naudojant dvi skirtingas struktūras: std::vector ir std::list. Programos veikimo laikai buvo lyginami. </br>
+**Galima padaryti išvadas:**
+* Lyginant vector ir list labai didelių skirtumų nėra
+* Atsižvelgiant į 10mln failą, sąrašas yra labiau tinkamas naudoti su dideliais duomenų kiekiais, priešingai negu vector, kuris geriau veikia mažesnio duomenų kiekio failuose.
+* Iš gautų rezultatų matome, kad su skirtingais duomenų kiekiais programos vykdymo laikai kito, todėl sudėtinga padaryti vienareikšmę išvadą, kuris konteinerio tipas: vektorius ar sąrašas, yra tinkamesnis failų nuskaitymui, išvedimui ar rūšiavimui.
+* Reiktų bandyti atlikti tyrimą su daugiau bandymų, kad gautume tikslesnius rezultatus.
